@@ -1,0 +1,13 @@
+{{#if showPicker}}
+  <ul class="{{pickerClass}}" tabindex="0">
+    {{#if resultsPending}}
+      <li>{{resultsPendingMessage}}</li>
+    {{else}}
+      {{#each results as | result |}}
+        <li onclick={{action "didSelectResult" result}} tabindex="0" onkeydown={{action "didKeyUp" result}}>{{result}}</li>
+      {{else}}
+        <li>{{noResultsMessage}}</li>
+      {{/each}}
+    {{/if}}
+  </ul>
+{{/if}}
