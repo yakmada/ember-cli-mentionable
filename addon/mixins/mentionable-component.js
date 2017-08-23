@@ -104,7 +104,7 @@ export default Ember.Mixin.create({
       if (text.length === 0) {
         results = data;
       } else {
-        data.map(value => {
+        data.map((value) => {
           if (value.toLowerCase().includes(text.toLowerCase())) {
             results.addObject(value);
           }
