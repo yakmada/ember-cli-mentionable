@@ -1,17 +1,19 @@
 {
   "name": "ember-cli-mentionable",
   "version": "0.0.2",
-  "description": "facebook style @mentions and #hashtags",
+  "description": "ember addon for facebook style @mentions and #hashtags",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "mention",
+    "hastag"
   ],
   "license": "MIT",
-  "author": "adam kay",
+  "author": "adam kay (adam@jelli.com)",
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "",
+  "repository": "https://github.com/yakmada/ember-cli-mentionable",
   "scripts": {
     "build": "ember build",
     "start": "ember server",
