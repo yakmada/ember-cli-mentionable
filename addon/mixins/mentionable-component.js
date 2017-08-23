@@ -50,7 +50,6 @@ export default Ember.Mixin.create({
   data: null,
   value: null,
   mentionables: null,
-  renderValue: alias('value'),
   inputSelector: 'input',
   inputClassNames: 'mentionable-input',
   debounceTime: 100,
@@ -83,7 +82,7 @@ export default Ember.Mixin.create({
 
   parseMentionable(mentionable) {
     return new Ember.RSVP.Promise((resolve) => {
-      const text = `${this.get('renderValue')}`;
+      const text = `${this.get('value')}`;
       const match = text.match(mentionable.get('re'));
       if (match !== null) {
         const matchText = match[0].split(mentionable.get('key'))[1];
@@ -108,7 +107,7 @@ export default Ember.Mixin.create({
       } else {
         data.map(value => {
           if (value.toLowerCase().includes(text.toLowerCase())) {
-            results.push(value);
+            results.addObject(value);
           }
         });
       }
@@ -118,9 +117,8 @@ export default Ember.Mixin.create({
   },
 
   updateValue() {
-    // console.log('match', this.get('match'));
-    const value = this.get('renderValue').replace(this.get('match'), '');
-    this.set('renderValue', `${value}${this.get('selectedResult')} `);
+    const value = this.get('value').replace(this.get('match'), '');
+    this.set('value', `${value}${this.get('selectedResult')} `);
     this.set('results', null);
     this.$(this.get('inputSelector')).focus();
   },
