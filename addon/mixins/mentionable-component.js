@@ -2,8 +2,7 @@ import Ember from 'ember';
 
 const {
   isPresent,
-  computed,
-  computed: { alias }
+  computed
 } = Ember;
 
 const Mentionable = Ember.Object.extend({
