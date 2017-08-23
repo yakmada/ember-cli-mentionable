@@ -15,17 +15,16 @@ export default Ember.Component.extend({
     didSelectResult(selectedResult) {
       this.selectResult(selectedResult);
     },
-    didKeyUp(selectedResult, event) {
-      this.handleKeyUp(selectedResult, event);
+    didKeyDown(selectedResult, event) {
+      this.handleKeyDown(selectedResult, event);
     }
   },
 
-  handleKeyUp(selectedResult, event) {
+  handleKeyDown(selectedResult, event) {
       if (isEmpty(this.get('results'))) {
         return;
       }
       event.preventDefault();
-      event.stopPropagation();
       switch (event.keyCode) {
           case 38: // arrow up
             this.selectPrevious();
