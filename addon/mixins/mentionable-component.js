@@ -56,7 +56,7 @@ export default Ember.Mixin.create({
 
   didReceiveAttrs() {
     this._super(...arguments);
-    let mentionables = [];
+    let mentionables = Ember.A([]);
     Ember.makeArray(this.get('data')).map((dataItem) => {
       let mentionable = Mentionable.create(dataItem);
       mentionable.set('re', new RegExp(`(^|\\W+)${mentionable.get('key')}\\w*$`, "gi"));
@@ -69,7 +69,7 @@ export default Ember.Mixin.create({
   parseMentionables() {
     this.set('results', null);
     this.set('resultsPending', true);
-    var promises = [];
+    var promises = Ember.A([]);
     this.get('mentionables').map((mentionable) => {
       promises.addObject(this.parseMentionable(mentionable));
     })
@@ -101,7 +101,7 @@ export default Ember.Mixin.create({
   searchData(text, data) {
     return new Ember.RSVP.Promise((resolve /* , reject */) => {
       // Ember.run.later(this, function() {
-      let results = [];
+      let results = Ember.A([]);
       if (text.length === 0) {
         results = data;
       } else {
