@@ -13,7 +13,6 @@ const Mentionable = Ember.Object.extend({
 
 export default Ember.Mixin.create({
   elementClassNames: null,
-  type: 'text',
   actions: {
     didFocusIn() {
       this.sendAction('didFocusIn');
