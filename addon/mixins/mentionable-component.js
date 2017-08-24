@@ -86,8 +86,9 @@ export default Ember.Mixin.create({
       if (match !== null) {
         const matchText = match[0].split(mentionable.get('key'))[1];
         this.set('match', matchText);
-        this.searchData(matchText, mentionable.get('data')).then((results) => {
+        this.searchData(matchText, mentionable).then((results) => {
           this.set('results', results);
+          this.set('searchProperty', mentionable.get('searchProperty'));
         }).finally(() => {
           resolve();
         });
@@ -97,15 +98,21 @@ export default Ember.Mixin.create({
     });
   },
 
-  searchData(text, data) {
+  searchData(text, mentionable) {
     return new Ember.RSVP.Promise((resolve /* , reject */) => {
       // Ember.run.later(this, function() {
+      const values = mentionable.get('data');
+      const searchProperty = mentionable.get('searchProperty');
       let results = Ember.A([]);
       if (text.length === 0) {
-        results = data;
+        results = values;
       } else {
-        data.map((value) => {
-          if (value.toLowerCase().includes(text.toLowerCase())) {
+        values.map((value) => {
+          let searchValue = value;
+          if (isPresent(searchProperty)) {
+            searchValue = Ember.Object.create(value).get(searchProperty);
+          }
+          if (searchValue.toLowerCase().includes(text.toLowerCase())) {
             results.addObject(value);
           }
         });
@@ -116,8 +123,13 @@ export default Ember.Mixin.create({
   },
 
   updateValue() {
+    let selectedResult = this.get('selectedResult');
+    let searchProperty = this.get('searchProperty');
+    if (isPresent(searchProperty)) {
+      selectedResult = Ember.Object.create(selectedResult).get(searchProperty);
+    }
     const value = this.get('value').replace(this.get('match'), '');
-    this.set('value', `${value}${this.get('selectedResult')} `);
+    this.set('value', `${value}${selectedResult} `);
     this.set('results', null);
     this.$(this.get('inputSelector')).focus();
   },

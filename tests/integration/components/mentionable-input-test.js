@@ -4,6 +4,17 @@ import wait from 'ember-test-helpers/wait';
 // import { keyEvent } from 'ember-native-dom-helpers';
 
 const DUMMY_DATA = ['foo', 'bar', 'baz'];
+const DUMMY_COMPLEX_DATA = [
+  {
+    name: 'foo'
+  },
+  {
+    name: 'bar'
+  },
+  {
+    name: 'baz'
+  }
+];
 
 moduleForComponent('mentionable-input', 'Integration | Component | mentionable input', {
   integration: true
@@ -19,6 +30,25 @@ test('it renders', function(assert) {
 test('it renders picker results', function(assert) {
   const mentionableData = [{
     data: DUMMY_DATA
+  }];
+  this.set('mentionableData', mentionableData)
+  this.render(hbs `
+    {{mentionable-input
+      data=mentionableData
+    }}
+  `);
+
+  this.$('input').val('@b').trigger('keyup');
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
+  });
+});
+
+test('it renders picker searchProperty results', function(assert) {
+  const mentionableData = [{
+    searchProperty: 'name',
+    data: DUMMY_COMPLEX_DATA
   }];
   this.set('mentionableData', mentionableData)
   this.render(hbs `
@@ -96,6 +126,33 @@ test('it sets results from click', function(assert) {
     });
   });
 });
+
+
+test('it sets searchProperty results from click', function(assert) {
+  const mentionableData = [{
+    searchProperty: 'name',
+    data: DUMMY_COMPLEX_DATA
+  }];
+  this.set('testValue', '');
+  this.set('mentionableData', mentionableData)
+  this.render(hbs `
+    {{mentionable-input
+      data=mentionableData
+      value=testValue
+    }}
+  `);
+
+  this.$('input').val('@b').trigger('keyup');
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
+    this.$('li').first().click();
+    return wait().then(() => {
+      assert.ok(this.$('input').val().trim().includes('bar'));
+    });
+  });
+});
+
 
 /* commenting out keyboard tests, as wait() is not waiting :( */
 

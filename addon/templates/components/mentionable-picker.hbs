@@ -4,7 +4,13 @@
       <li>{{resultsPendingMessage}}</li>
     {{else}}
       {{#each results as | result |}}
-        <li onclick={{action "didSelectResult" result}} tabindex="0" onkeydown={{action "didKeyDown" result}}>{{result}}</li>
+        <li onclick={{action "didSelectResult" result}} tabindex="0" onkeydown={{action "didKeyDown" result}}>
+          {{#if searchProperty}}
+            {{mut (get result searchProperty)}}
+          {{else}}
+            {{result}}
+          {{/if}}
+        </li>
       {{else}}
         <li>{{noResultsMessage}}</li>
       {{/each}}
