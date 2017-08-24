@@ -6,7 +6,7 @@ const {
 } = Ember;
 
 const Mentionable = Ember.Object.extend({
-  key: '@',
+  token: '@',
   re: null,
   values: []
 });
@@ -57,7 +57,7 @@ export default Ember.Mixin.create({
     let mentionables = Ember.A([]);
     Ember.makeArray(this.get('config')).map((configItem) => {
       let mentionable = Mentionable.create(configItem);
-      mentionable.set('re', new RegExp(`(^|\\W+)${mentionable.get('key')}\\w*$`, "gi"));
+      mentionable.set('re', new RegExp(`(^|\\W+)${mentionable.get('token')}\\w*$`, "gi"));
       mentionables.addObject(mentionable);
     });
 
@@ -83,7 +83,7 @@ export default Ember.Mixin.create({
       const text = `${this.get('value')}`;
       const match = text.match(mentionable.get('re'));
       if (match !== null) {
-        const matchText = match[0].split(mentionable.get('key'))[1];
+        const matchText = match[0].split(mentionable.get('token'))[1];
         this.set('match', matchText);
         this.searchValues(matchText, mentionable).then((results) => {
           this.set('results', results);
