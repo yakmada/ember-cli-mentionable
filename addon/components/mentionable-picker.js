@@ -8,20 +8,20 @@ const WRAPPER_CLASS = 'mentionable-picker-wrapper';
 export default Ember.Component.extend({
   layout,
   classNames: [WRAPPER_CLASS],
-  results: null,
-  selectedResult: null,
+  matchingValues: null,
+  selectedValue: null,
   showPicker: null,
   actions: {
-    didSelectResult(selectedResult) {
-      this.selectResult(selectedResult);
+    didSelectValue(selectedValue) {
+      this.selectValue(selectedValue);
     },
-    didKeyDown(selectedResult, event) {
-      this.handleKeyDown(selectedResult, event);
+    didKeyDown(selectedValue, event) {
+      this.handleKeyDown(selectedValue, event);
     }
   },
 
-  handleKeyDown(selectedResult, event) {
-      if (isEmpty(this.get('results'))) {
+  handleKeyDown(selectedValue, event) {
+      if (isEmpty(this.get('matchingValues'))) {
         return;
       }
       event.preventDefault();
@@ -33,7 +33,7 @@ export default Ember.Component.extend({
             this.selectNext();
               break;
           case 13: // enter
-            this.selectResult(selectedResult);
+            this.selectValue(selectedValue);
               break;
       }
   },
@@ -58,9 +58,9 @@ export default Ember.Component.extend({
     $next.addClass('active').focus();
   },
 
-  selectResult(selectedResult) {
-      this.set('selectedResult', selectedResult);
-      this.sendAction('didSelectResult');
+  selectValue(selectedValue) {
+      this.set('selectedValue', selectedValue);
+      this.sendAction('didSelectValue');
   },
 
   focusIn(event) {

@@ -77,7 +77,7 @@ test('it renders no results found', function(assert) {
 
   this.$('textarea').val('@bo').trigger('keyup');
   return wait().then(() => {
-    assert.ok(this.$('ul').text().trim().includes('no results'));
+    assert.ok(this.$('ul').text().trim().includes('no matching items'));
   });
 });
 

@@ -39,9 +39,9 @@ export default Ember.Mixin.create({
         Ember.run.debounce(this, this.parseMentionables, this.get('debounceTime'));
       }
     },
-    didSelectResult() {
+    didSelectValue() {
       this.updateValue();
-      this.sendAction('didSelectResult');
+      this.sendAction('didSelectValue');
     },
   },
 
@@ -65,15 +65,15 @@ export default Ember.Mixin.create({
   },
 
   parseMentionables() {
-    this.set('results', null);
-    this.set('resultsPending', true);
+    this.set('matchingValues', null);
+    this.set('matchingValuesPending', true);
     var promises = Ember.A([]);
     this.get('mentionables').map((mentionable) => {
       promises.addObject(this.parseMentionable(mentionable));
     })
 
     Ember.RSVP.all(promises).finally(() => {
-      this.set('resultsPending', false);
+      this.set('matchingValuesPending', false);
     });
   },
 
@@ -85,8 +85,8 @@ export default Ember.Mixin.create({
       if (match !== null) {
         const matchText = match[0].split(mentionable.get('token'))[1];
         this.set('match', matchText);
-        this.searchValues(matchText, mentionable).then((results) => {
-          this.set('results', results);
+        this.searchValues(matchText, mentionable).then((matchingValues) => {
+          this.set('matchingValues', matchingValues);
           this.set('searchProperty', mentionable.get('searchProperty'));
         }).finally(() => {
           resolve();
@@ -102,9 +102,9 @@ export default Ember.Mixin.create({
       // Ember.run.later(this, function() {
       const values = mentionable.get('values');
       const searchProperty = mentionable.get('searchProperty');
-      let results = Ember.A([]);
+      let matchingValues = Ember.A([]);
       if (text.length === 0) {
-        results = values;
+        matchingValues = values;
       } else {
         values.map((value) => {
           let searchValue = value;
@@ -112,43 +112,44 @@ export default Ember.Mixin.create({
             searchValue = Ember.Object.create(value).get(searchProperty);
           }
           if (searchValue.toLowerCase().includes(text.toLowerCase())) {
-            results.addObject(value);
+            matchingValues.addObject(value);
           }
         });
       }
-      resolve(results);
+      resolve(matchingValues);
       // }, 1000);
     });
   },
 
   updateValue() {
-    let selectedResult = this.get('selectedResult');
+    let selectedValue = this.get('selectedValue');
     let searchProperty = this.get('searchProperty');
     if (isPresent(searchProperty)) {
-      selectedResult = Ember.Object.create(selectedResult).get(searchProperty);
+      selectedValue = Ember.Object.create(selectedValue).get(searchProperty);
     }
     const value = this.get('value').replace(this.get('match'), '');
-    this.set('value', `${value}${selectedResult} `);
-    this.set('results', null);
+    this.set('value', `${value}${selectedValue} `);
+    this.set('matchingValues', null);
     this.$(this.get('inputSelector')).focus();
   },
 
   /*
-    properties for results
+    properties for matchingValues
   */
-  results: null,
-  selectedResult: null,
-  resultsPending: null,
-  showPicker: computed('results', 'resultsPending', function() {
-    return (this.get('results') !== null || this.get('resultsPending') === true);
+  matchingValues: null,
+  selectedValue: null,
+  matchingValuesPending: null,
+  showPicker: computed('matchingValues', 'matchingValuesPending', function() {
+    return (this.get('matchingValues') !== null || this.get('matchingValuesPending') === true);
   }),
   pickerClass: 'mentionable-picker',
-  noResultsMessage: 'no results found.',
-  resultsPendingMessage: 'loading...',
+  noMatchingValuesMessage: 'no matching items found.',
+  matchingValuesPendingMessage: 'loading...',
+  pickerItemPartial: null,
   focusPicker(event) {
     if (
         (event.keyCode === 38 || event.keyCode === 40) &&
-        isPresent(this.get('results'))
+        isPresent(this.get('matchingValues'))
       )
     {
       this.$(`.${this.get('pickerClass')}`).focus();

@@ -15,11 +15,11 @@ test('it renders', function(assert) {
   assert.equal(this.$().text().trim(), '');
 });
 
-test('it renders results', function(assert) {
-  this.set('results', DUMMY_DATA);
+test('it renders matchingValues', function(assert) {
+  this.set('matchingValues', DUMMY_DATA);
   this.render(hbs`
     {{mentionable-picker
-      results=results
+      matchingValues=matchingValues
       showPicker=true
     }}
   `);
@@ -30,10 +30,10 @@ test('it renders results', function(assert) {
 });
 
 test('it hides', function(assert) {
-  this.set('results', DUMMY_DATA);
+  this.set('matchingValues', DUMMY_DATA);
   this.render(hbs`
     {{mentionable-picker
-      results=results
+      matchingValues=matchingValues
       showPicker=false
     }}
   `);
@@ -41,40 +41,40 @@ test('it hides', function(assert) {
 });
 
 test('it shows pending message', function(assert) {
-  this.set('results', DUMMY_DATA);
-  this.set('resultsPendingMessage', 'pending');
+  this.set('matchingValues', DUMMY_DATA);
+  this.set('matchingValuesPendingMessage', 'pending');
   this.render(hbs`
     {{mentionable-picker
-      results=results
+      matchingValues=matchingValues
       showPicker=true
-      resultsPending=true
-      resultsPendingMessage=resultsPendingMessage
+      matchingValuesPending=true
+      matchingValuesPendingMessage=matchingValuesPendingMessage
     }}
   `);
     assert.equal(this.$('ul').text().trim(), 'pending');
 });
 
-test('it shows no results message', function(assert) {
-  this.set('results', []);
-  this.set('noResultsMessage', 'no results');
+test('it shows no matchingValues message', function(assert) {
+  this.set('matchingValues', []);
+  this.set('noMatchingValuesMessage', 'no matching items');
   this.render(hbs`
     {{mentionable-picker
-      results=results
+      matchingValues=matchingValues
       showPicker=true
-      noResultsMessage=noResultsMessage
+      noMatchingValuesMessage=noMatchingValuesMessage
     }}
   `);
-    assert.equal(this.$('ul').text().trim(), 'no results');
+    assert.equal(this.$('ul').text().trim(), 'no matching items');
 });
 
-test('it sets results from click', function(assert) {
-  this.set('results', DUMMY_DATA);
-  this.set('selectedResult', null);
+test('it sets matchingValues from click', function(assert) {
+  this.set('matchingValues', DUMMY_DATA);
+  this.set('selectedValue', null);
   this.render(hbs `
     {{mentionable-picker
-      results=results
+      matchingValues=matchingValues
       showPicker=true
-      selectedResult=selectedResult
+      selectedValue=selectedValue
     }}
   `);
 
@@ -85,7 +85,7 @@ test('it sets results from click', function(assert) {
     assert.ok(this.$('ul').text().trim().includes('baz'));
     this.$('li').first().click();
     return wait().then(() => {
-      assert.equal(this.get('selectedResult').trim(), 'foo');
+      assert.equal(this.get('selectedValue').trim(), 'foo');
     });
   });
 });
@@ -93,14 +93,14 @@ test('it sets results from click', function(assert) {
 
 /* commenting out keyboard tests, as wait() is not waiting :( */
 
-// test('it sets results from keyboard', function(assert) {
-//   this.set('results', DUMMY_DATA);
-//   this.set('selectedResult', null);
+// test('it sets matchingValues from keyboard', function(assert) {
+//   this.set('matchingValues', DUMMY_DATA);
+//   this.set('selectedValue', null);
 //   this.render(hbs `
 //     {{mentionable-picker
-//       results=results
+//       matchingValues=matchingValues
 //       showPicker=true
-//       selectedResult=selectedResult
+//       selectedValue=selectedValue
 //     }}
 //   `);
 
@@ -112,19 +112,19 @@ test('it sets results from click', function(assert) {
 
 //     keyEvent('li', 'keydown', 13);
 //     return wait().then(() => {
-//       assert.equal(this.get('selectedResult').trim(), 'foo');
+//       assert.equal(this.get('selectedValue').trim(), 'foo');
 //     });
 //   });
 // });
 
 // test('it sets navigates up from keyboard', function(assert) {
-//   this.set('results', DUMMY_DATA);
-//   this.set('selectedResult', null);
+//   this.set('matchingValues', DUMMY_DATA);
+//   this.set('selectedValue', null);
 //   this.render(hbs `
 //     {{mentionable-picker
-//       results=results
+//       matchingValues=matchingValues
 //       showPicker=true
-//       selectedResult=selectedResult
+//       selectedValue=selectedValue
 //       pickerClass="picker-sticker"
 //     }}
 //   `);
@@ -149,13 +149,13 @@ test('it sets results from click', function(assert) {
 // });
 
 // test('it sets navigates down from keyboard', function(assert) {
-//   this.set('results', DUMMY_DATA);
-//   this.set('selectedResult', null);
+//   this.set('matchingValues', DUMMY_DATA);
+//   this.set('selectedValue', null);
 //   this.render(hbs `
 //     {{mentionable-picker
-//       results=results
+//       matchingValues=matchingValues
 //       showPicker=true
-//       selectedResult=selectedResult
+//       selectedValue=selectedValue
 //       pickerClass="picker-sticker"
 //     }}
 //   `);
