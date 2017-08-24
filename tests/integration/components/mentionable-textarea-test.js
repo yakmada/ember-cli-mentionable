@@ -3,7 +3,18 @@ import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 // import { keyEvent } from 'ember-native-dom-helpers';
 
-const DUMMY_DATA = ['foo', 'bar', 'baz'];
+const DUMMY_VALUES = ['foo', 'bar', 'baz'];
+const DUMMY_COMPLEX_VALUES = [
+  {
+    name: 'foo'
+  },
+  {
+    name: 'bar'
+  },
+  {
+    name: 'baz'
+  }
+];
 
 moduleForComponent('mentionable-textarea', 'Integration | Component | mentionable textarea', {
   integration: true
@@ -17,13 +28,32 @@ test('it renders', function(assert) {
 });
 
 test('it renders picker results', function(assert) {
-  const mentionableData = [{
-    data: DUMMY_DATA
+  const mentionableConfig = [{
+    values: DUMMY_VALUES
   }];
-  this.set('mentionableData', mentionableData)
+  this.set('mentionableConfig', mentionableConfig)
   this.render(hbs `
     {{mentionable-textarea
-      data=mentionableData
+      config=mentionableConfig
+    }}
+  `);
+
+  this.$('textarea').val('@b').trigger('keyup');
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
+  });
+});
+
+test('it renders picker searchProperty results', function(assert) {
+  const mentionableConfig = [{
+    searchProperty: 'name',
+    values: DUMMY_COMPLEX_VALUES
+  }];
+  this.set('mentionableConfig', mentionableConfig)
+  this.render(hbs `
+    {{mentionable-textarea
+      config=mentionableConfig
     }}
   `);
 
@@ -35,13 +65,13 @@ test('it renders picker results', function(assert) {
 });
 
 test('it renders no results found', function(assert) {
-  const mentionableData = [{
-    data: DUMMY_DATA
+  const mentionableConfig = [{
+    values: DUMMY_VALUES
   }];
-  this.set('mentionableData', mentionableData)
+  this.set('mentionableConfig', mentionableConfig)
   this.render(hbs `
     {{mentionable-textarea
-      data=mentionableData
+      config=mentionableConfig
     }}
   `);
 
@@ -52,13 +82,13 @@ test('it renders no results found', function(assert) {
 });
 
 test('it clears picker results', function(assert) {
-  const mentionableData = [{
-    data: DUMMY_DATA
+  const mentionableConfig = [{
+    values: DUMMY_VALUES
   }];
-  this.set('mentionableData', mentionableData)
+  this.set('mentionableConfig', mentionableConfig)
   this.render(hbs `
     {{mentionable-textarea
-      data=mentionableData
+      config=mentionableConfig
     }}
   `);
 
@@ -74,14 +104,14 @@ test('it clears picker results', function(assert) {
 
 
 test('it sets results from click', function(assert) {
-  const mentionableData = [{
-    data: DUMMY_DATA
+  const mentionableConfig = [{
+    values: DUMMY_VALUES
   }];
   this.set('testValue', '');
-  this.set('mentionableData', mentionableData)
+  this.set('mentionableConfig', mentionableConfig)
   this.render(hbs `
     {{mentionable-textarea
-      data=mentionableData
+      config=mentionableConfig
       value=testValue
     }}
   `);
@@ -97,17 +127,46 @@ test('it sets results from click', function(assert) {
   });
 });
 
+test('it sets searchProperty results from click', function(assert) {
+  const mentionableConfig = [{
+    searchProperty: 'name',
+    values: DUMMY_COMPLEX_VALUES
+  }];
+  this.set('testValue', '');
+  this.set('mentionableConfig', mentionableConfig)
+  this.render(hbs `
+    {{mentionable-textarea
+      config=mentionableConfig
+      value=testValue
+    }}
+  `);
+
+  this.$('textarea').val('@b').trigger('keyup');
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
+    this.$('li').first().click();
+    return wait().then(() => {
+      const result = this.$('textarea').val().trim();
+      assert.ok(
+        result.includes('bar'),
+        `${result} includes 'bar'`
+      );
+    });
+  });
+});
+
 /* commenting out keyboard tests, as wait() is not waiting :( */
 
 // test('it sets results from keyboard', function(assert) {
-//   const mentionableData = [{
-//     data: DUMMY_DATA
+//   const mentionableConfig = [{
+//     values: DUMMY_VALUES
 //   }];
 //   this.set('testValue', 'x');
-//   this.set('mentionableData', mentionableData)
+//   this.set('mentionableConfig', mentionableConfig)
 //   this.render(hbs `
 //     {{mentionable-textarea
-//       data=mentionableData
+//       config=mentionableConfig
 //       value=testValue
 //     }}
 //   `);

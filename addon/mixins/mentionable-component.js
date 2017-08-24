@@ -8,7 +8,7 @@ const {
 const Mentionable = Ember.Object.extend({
   key: '@',
   re: null,
-  data: []
+  values: []
 });
 
 export default Ember.Mixin.create({
@@ -45,7 +45,7 @@ export default Ember.Mixin.create({
     },
   },
 
-  data: null,
+  config: null,
   value: null,
   mentionables: null,
   inputSelector: 'input',
@@ -55,8 +55,8 @@ export default Ember.Mixin.create({
   didReceiveAttrs() {
     this._super(...arguments);
     let mentionables = Ember.A([]);
-    Ember.makeArray(this.get('data')).map((dataItem) => {
-      let mentionable = Mentionable.create(dataItem);
+    Ember.makeArray(this.get('config')).map((configItem) => {
+      let mentionable = Mentionable.create(configItem);
       mentionable.set('re', new RegExp(`(^|\\W+)${mentionable.get('key')}\\w*$`, "gi"));
       mentionables.addObject(mentionable);
     });
@@ -85,7 +85,7 @@ export default Ember.Mixin.create({
       if (match !== null) {
         const matchText = match[0].split(mentionable.get('key'))[1];
         this.set('match', matchText);
-        this.searchData(matchText, mentionable).then((results) => {
+        this.searchValues(matchText, mentionable).then((results) => {
           this.set('results', results);
           this.set('searchProperty', mentionable.get('searchProperty'));
         }).finally(() => {
@@ -97,10 +97,10 @@ export default Ember.Mixin.create({
     });
   },
 
-  searchData(text, mentionable) {
+  searchValues(text, mentionable) {
     return new Ember.RSVP.Promise((resolve /* , reject */) => {
       // Ember.run.later(this, function() {
-      const values = mentionable.get('data');
+      const values = mentionable.get('values');
       const searchProperty = mentionable.get('searchProperty');
       let results = Ember.A([]);
       if (text.length === 0) {
