@@ -4,11 +4,14 @@ This README outlines the details of collaborating on this Ember addon.
 
 ## To Do
 
-* allow structured data `data: [ { name: 'Foo', value: 'foo' } ]`;
-* allow custom render function
+* provide sass stylesheet
 * documentation
 * create demo page
 * get `wait()` helper working with keyboard events
+* maxResults to display in list
+* smarter results matching (startsWith matches first)
+* highlight matching string in list
+* mentionable-contenteditable 
 
 ## Installation
 
