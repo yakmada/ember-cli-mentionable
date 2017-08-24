@@ -6,7 +6,7 @@
       {{#each results as | result |}}
         <li onclick={{action "didSelectResult" result}} tabindex="0" onkeydown={{action "didKeyDown" result}}>
           {{#if searchProperty}}
-            {{mut (get result searchProperty)}}
+            {{get result searchProperty}}
           {{else}}
             {{result}}
           {{/if}}
