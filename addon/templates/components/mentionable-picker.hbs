@@ -1,0 +1,21 @@
+{{#if showPicker}}
+  <ul class="{{pickerClass}}" tabindex="0">
+    {{#if matchingValuesPending}}
+      <li>{{matchingValuesPendingMessage}}</li>
+    {{else}}
+      {{#each matchingValues as | value |}}
+        <li onclick={{action "didSelectValue" value}} tabindex="0" onkeydown={{action "didKeyDown" value}}>
+          {{#if pickerItemPartial}}
+            {{partial pickerItemPartial}}
+          {{else if searchProperty}}
+            {{get value searchProperty}}
+          {{else}}
+            {{value}}
+          {{/if}}
+        </li>
+      {{else}}
+        <li>{{noMatchingValuesMessage}}</li>
+      {{/each}}
+    {{/if}}
+  </ul>
+{{/if}}

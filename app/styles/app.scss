@@ -1,0 +1,50 @@
+@import 'ember-cli-mentionable';
+
+* {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+body {
+  padding: 20px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-top: 20px;
+}
+h2 {
+  font-size: 18px;
+  margin-top: 50px;
+  padding: 10px;
+  background-color: #eee;
+}
+
+input, textarea {
+  width: 50%;
+  margin: 10px 0px 0px;
+}
+
+pre {
+  &:before {
+      display: block;
+      content: 'code';
+      background-color: gainsboro;
+      border: 1px solid hsl(0, 0%, 80%);
+      border-radius: 3px 0 5px 0;
+      padding: 2px 5px;
+      position: relative;
+      margin: -8px 0 10px -7px;
+      width: 115px;
+  }
+
+  &.htmlbars:before {
+      background-color: gold;
+      content: 'htmlbars';
+  }
+
+  &.controller:before {
+      background-color: lightblue;
+      content: 'controller.js';
+  }
+}
