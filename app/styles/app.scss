@@ -26,6 +26,7 @@ input, textarea {
 }
 
 pre {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   &:before {
       display: block;
       content: 'code';
@@ -47,4 +48,13 @@ pre {
       background-color: lightblue;
       content: 'controller.js';
   }
+}
+
+code {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  padding: 2px 4px;
+  font-size: 90%;
+  color: hsl(345, 69%, 46%);
+  background-color: hsl(343, 37%, 96%);
+  border-radius: 4px;
 }
