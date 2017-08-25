@@ -1,0 +1,39 @@
+.mentionable-picker-wrapper {
+    $border: 0px solid hsl(0, 0%, 80%);
+    $box-shadow: 0px 5px 12px hsl(0, 0%, 90%);
+    $padding: 3px 10px;
+    $background-color: hsl(0, 0%, 100%);
+    $background-color-active: hsl(0, 0%, 80%);
+    $background-color-hover: hsl(0, 0%, 90%);
+    $font-color: hsl(0, 0%, 0%);
+    $font-color-active: hsl(0, 0%, 0%);
+    $font-color-hover: hsl(0, 0%, 0%);
+    position: absolute;
+    z-index: 100;
+    ul {
+        width: auto;
+        min-width: auto;
+        margin: 0px;
+        padding-left: 0px;
+        list-style-type: none;
+        border: $border;
+        box-shadow: $box-shadow;
+        background-color: $background-color;
+        color: $font-color;
+        li {
+            width: auto;
+            min-width: auto;
+            text-align: left;
+            padding: $padding;
+            &.active {
+                color: $font-color-active;
+                background-color: $background-color-active;
+            }
+            &:hover {
+                cursor: pointer;
+                color: $font-color-hover;
+                background-color: $background-color-hover;
+            }
+        }
+    }
+}
