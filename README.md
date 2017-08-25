@@ -1,28 +1,39 @@
 # ember-cli-mentionable
 
-This README outlines the details of collaborating on this Ember addon.
+An ember-cli addon allowing facebook style @mentions and #hashtags on inputs and textareas.
+
+[demo](https://yakmada.github.io/ember-cli-mentionable/dist/)
+
+## Installation
+
+```
+ember ember-cli-mentionable
+```
+
+## Usage
+
+for examples and documentation, view the [demo](https://yakmada.github.io/ember-cli-mentionable/dist/)
+
+```hbs
+<!-- template -->
+{{mentionable-input config=mentionableConfig value=foo}}
+```
+
+```javascript
+// controller
+mentionableConfig: {
+  values: ['Johnny', 'Syd', 'Steve', 'Paul']
+}
+```
 
 ## To Do
 
-* provide sass stylesheet
-* documentation
-* create demo page
-* get `wait()` helper working with keyboard events
+* use travisci
+* get `wait()` helper working for testing keyboard events
 * maxResults to display in list
 * smarter results matching (startsWith matches first)
 * highlight matching string in list
 * mentionable-contenteditable 
-
-## Installation
-
-* `git clone <repository-url>` this repository
-* `cd ember-cli-mentionable`
-* `npm install`
-
-## Running
-
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
 
 ## Running Tests
 
@@ -30,8 +41,5 @@ This README outlines the details of collaborating on this Ember addon.
 * `ember test`
 * `ember test --server`
 
-## Building
-
-* `ember build`
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
