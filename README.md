@@ -4,13 +4,22 @@
 
 An ember-cli addon allowing facebook style @mentions and #hashtags on inputs and textareas.
 
+* written entirely in ember (no bower dependencies)
+* configurable and override-able
+* promise-based 
+* no observers
+
 [demo](https://yakmada.github.io/ember-cli-mentionable/dist/)
+
+
 
 ## Installation
 
 ```
-ember ember-cli-mentionable
+ember install ember-cli-mentionable
 ```
+
+
 
 ## Usage
 
@@ -28,6 +37,8 @@ mentionableConfig: {
 }
 ```
 
+
+
 ## To Do
 
 * get `wait()` helper working for testing keyboard events
@@ -35,6 +46,8 @@ mentionableConfig: {
 * smarter results matching (startsWith matches first)
 * highlight matching string in list
 * mentionable-contenteditable 
+
+
 
 ## Running Tests
 
