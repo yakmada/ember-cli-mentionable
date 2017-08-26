@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-mentionable",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "ember addon for facebook style @mentions and #hashtags",
   "keywords": [
     "ember-addon",
