@@ -1,4 +1,6 @@
-# ember-cli-mentionable
+# ember-cli-mentionable 
+[![Build Status](https://travis-ci.org/yakmada/ember-cli-mentionable.svg?branch=master)](https://travis-ci.org/yakmada/ember-cli-mentionable) 
+[![npm version](https://badge.fury.io/js/ember-cli-mentionable.svg)](https://badge.fury.io/js/ember-cli-mentionable)
 
 An ember-cli addon allowing facebook style @mentions and #hashtags on inputs and textareas.
 
