@@ -4,8 +4,7 @@ import wait from 'ember-test-helpers/wait';
 // import { keyEvent } from 'ember-native-dom-helpers';
 
 const DUMMY_VALUES = ['foo', 'bar', 'baz'];
-const DUMMY_COMPLEX_VALUES = [
-  {
+const DUMMY_COMPLEX_VALUES = [{
     name: 'foo'
   },
   {
@@ -156,6 +155,42 @@ test('it sets searchProperty results from click', function(assert) {
     });
   });
 });
+
+
+/*
+  this test verifies an issue where the RegExp was improperly replacing the input value
+  type: 'below the @b'
+  select: 'bar'
+  result: 'elow the @bbar'
+ */
+test('it correctly updates input', function(assert) {
+  const mentionableConfig = [{
+    values: DUMMY_VALUES
+  }];
+  this.set('testValue', '');
+  this.set('mentionableConfig', mentionableConfig)
+  this.render(hbs `
+    {{mentionable-input
+      config=mentionableConfig
+      value=testValue
+    }}
+  `);
+
+  this.$('input').val('below the @b').trigger('keyup');
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
+    this.$('li').first().click();
+    return wait().then(() => {
+      const result = this.$('input').val().trim();
+      assert.equal(
+        result,
+        `below the @bar`
+      );
+    });
+  });
+});
+
 
 
 /* commenting out keyboard tests, as wait() is not waiting :( */

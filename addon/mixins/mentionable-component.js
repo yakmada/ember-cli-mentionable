@@ -83,8 +83,9 @@ export default Ember.Mixin.create({
       const text = `${this.get('value')}`;
       const match = text.match(mentionable.get('re'));
       if (match !== null) {
+        this.set('match', match[0].trim());
+        this.set('token', mentionable.get('token'));
         const matchText = match[0].split(mentionable.get('token'))[1];
-        this.set('match', matchText);
         this.searchValues(matchText, mentionable).then((matchingValues) => {
           this.set('matchingValues', matchingValues);
           this.set('searchProperty', mentionable.get('searchProperty'));
@@ -128,7 +129,8 @@ export default Ember.Mixin.create({
       selectedValue = Ember.Object.create(selectedValue).get(searchProperty);
     }
     const value = this.get('value').replace(this.get('match'), '');
-    this.set('value', `${value}${selectedValue} `);
+    const token = this.get('token');
+    this.set('value', `${value}${token}${selectedValue} `);
     this.set('matchingValues', null);
     this.$(this.get('inputSelector')).focus();
   },
