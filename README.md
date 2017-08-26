@@ -28,7 +28,6 @@ mentionableConfig: {
 
 ## To Do
 
-* use travisci
 * get `wait()` helper working for testing keyboard events
 * maxResults to display in list
 * smarter results matching (startsWith matches first)
