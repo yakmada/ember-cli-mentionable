@@ -100,7 +100,6 @@ export default Ember.Mixin.create({
 
   searchValues(text, mentionable) {
     return new Ember.RSVP.Promise((resolve /* , reject */) => {
-      // Ember.run.later(this, function() {
       const values = mentionable.get('values');
       const searchProperty = mentionable.get('searchProperty');
       let matchingValues = Ember.A([]);
@@ -118,7 +117,6 @@ export default Ember.Mixin.create({
         });
       }
       resolve(matchingValues);
-      // }, 1000);
     });
   },
 
