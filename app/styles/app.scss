@@ -1,5 +1,7 @@
+// BEGIN-SNIPPET import-styles
 @import 'ember-cli-mentionable';
-
+// END-SNIPPET
+//
 * {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -47,6 +49,11 @@ pre {
   &.controller:before {
       background-color: lightblue;
       content: 'controller.js';
+  }
+
+  &.scss:before {
+      background-color: salmon;
+      content: 'scss';
   }
 }
 
