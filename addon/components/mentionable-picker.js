@@ -35,6 +35,9 @@ export default Ember.Component.extend({
           case 13: // enter
             this.selectValue(selectedValue);
               break;
+          case 27: // escape
+            this.sendAction('focusInput');
+              break;
       }
   },
 

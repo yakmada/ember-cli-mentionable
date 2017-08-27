@@ -45,6 +45,10 @@ export default Ember.Mixin.create({
       this.updateValue();
       this.sendAction('didSelectValue');
     },
+    focusInput() {
+      this.$(this.get('inputSelector')).focus();
+    },
+
   },
 
   config: null,
