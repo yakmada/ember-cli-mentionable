@@ -15,6 +15,8 @@ const DUMMY_COMPLEX_VALUES = [{
   }
 ];
 
+const SORT_TEST_VALUES = ['tell', 'ask', 'say'];
+
 moduleForComponent('mentionable-input', 'Integration | Component | mentionable input', {
   integration: true
 });
@@ -220,3 +222,89 @@ test('it correctly updates input', function(assert) {
 //     });
 //   });
 // });
+
+test('it renders sorted results', function(assert) {
+  const mentionableConfig = [{
+    values: SORT_TEST_VALUES
+  }];
+  this.set('mentionableConfig', mentionableConfig)
+  this.render(hbs `
+    {{mentionable-input
+      config=mentionableConfig
+    }}
+  `);
+
+  this.$('input').val('@').trigger('keyup');
+  return wait().then(() => {
+    const li0 = this.$('ul li:eq(0)').text().trim();
+    assert.equal(li0, 'ask', `${li0} equals 'ask'`);
+    const li1 = this.$('ul li:eq(1)').text().trim();
+    assert.equal(li1, 'say', `${li1} equals 'say'`);
+    const li2 = this.$('ul li:eq(2)').text().trim();
+    assert.equal(li2, 'tell', `${li2} equals 'tell'`);
+  });
+});
+
+test('it respects returnSortedMatches: false', function(assert) {
+  const mentionableConfig = [{
+    returnSortedMatches: false,
+    values: SORT_TEST_VALUES
+  }];
+  this.set('mentionableConfig', mentionableConfig)
+  this.render(hbs `
+    {{mentionable-input
+      config=mentionableConfig
+    }}
+  `);
+
+  this.$('input').val('@').trigger('keyup');
+  return wait().then(() => {
+    const li0 = this.$('ul li:eq(0)').text().trim();
+    assert.equal(li0, 'tell', `${li0} equals 'tell'`);
+    const li1 = this.$('ul li:eq(1)').text().trim();
+    assert.equal(li1, 'ask', `${li1} equals 'ask'`);
+    const li2 = this.$('ul li:eq(2)').text().trim();
+    assert.equal(li2, 'say', `${li2} equals 'say'`);
+  });
+});
+
+test('it renders startsWith values before includes values results', function(assert) {
+  const mentionableConfig = [{
+    values: SORT_TEST_VALUES
+  }];
+  this.set('mentionableConfig', mentionableConfig)
+  this.render(hbs `
+    {{mentionable-input
+      config=mentionableConfig
+    }}
+  `);
+
+  this.$('input').val('@s').trigger('keyup');
+  return wait().then(() => {
+    const li0 = this.$('ul li:eq(0)').text().trim();
+    assert.equal(li0, 'say', `${li0} equals 'say'`);
+    const li1 = this.$('ul li:eq(1)').text().trim();
+    assert.equal(li1, 'ask', `${li1} equals 'ask'`);
+  });
+});
+
+test('it respects returnStartingMatchesFirst: false', function(assert) {
+  const mentionableConfig = [{
+    returnStartingMatchesFirst: false,
+    values: SORT_TEST_VALUES
+  }];
+  this.set('mentionableConfig', mentionableConfig)
+  this.render(hbs `
+    {{mentionable-input
+      config=mentionableConfig
+    }}
+  `);
+
+  this.$('input').val('@s').trigger('keyup');
+  return wait().then(() => {
+    const li0 = this.$('ul li:eq(0)').text().trim();
+    assert.equal(li0, 'ask', `${li0} equals 'ask'`);
+    const li1 = this.$('ul li:eq(1)').text().trim();
+    assert.equal(li1, 'say', `${li1} equals 'say'`);
+  });
+});

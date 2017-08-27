@@ -8,6 +8,8 @@ const {
 const Mentionable = Ember.Object.extend({
   token: '@',
   re: null,
+  returnSortedMatches: true,
+  returnStartingMatchesFirst: true,
   values: []
 });
 
@@ -54,10 +56,23 @@ export default Ember.Mixin.create({
 
   didReceiveAttrs() {
     this._super(...arguments);
+
     let mentionables = Ember.A([]);
     Ember.makeArray(this.get('config')).map((configItem) => {
+      Ember.assert('Values must be an array!', Array.isArray(configItem.values));
+
+      // make a copy of values to keep from mutating on sort
+      let values = Ember.A(configItem.values.slice());
+
       let mentionable = Mentionable.create(configItem);
       mentionable.set('re', new RegExp(`(^|\\W+)${mentionable.get('token')}\\w*$`, "gi"));
+
+      if (mentionable.get('returnSortedMatches')) {
+        const searchProperty = mentionable.get('searchProperty');
+        values = (isPresent(searchProperty)) ? values.sortBy(searchProperty) : values.sort();
+      }
+
+      mentionable.set('values', values);
       mentionables.addObject(mentionable);
     });
 
@@ -102,7 +117,10 @@ export default Ember.Mixin.create({
     return new Ember.RSVP.Promise((resolve /* , reject */) => {
       const values = mentionable.get('values');
       const searchProperty = mentionable.get('searchProperty');
+      const returnStartingMatchesFirst = mentionable.get('returnStartingMatchesFirst');
       let matchingValues = Ember.A([]);
+      let matchingStartsWith = Ember.A([]);
+      let matchingIncludes = Ember.A([]);
       if (text.length === 0) {
         matchingValues = values;
       } else {
@@ -111,11 +129,20 @@ export default Ember.Mixin.create({
           if (isPresent(searchProperty)) {
             searchValue = Ember.Object.create(value).get(searchProperty);
           }
-          if (searchValue.toLowerCase().includes(text.toLowerCase())) {
-            matchingValues.addObject(value);
+          if (
+            returnStartingMatchesFirst &&
+            searchValue.toLowerCase().startsWith(text.toLowerCase())
+          ) {
+            matchingStartsWith.addObject(value);
+          }
+          else if (searchValue.toLowerCase().includes(text.toLowerCase())) {
+            matchingIncludes.addObject(value);
           }
         });
+        matchingValues.addObjects(matchingStartsWith);
+        matchingValues.addObjects(matchingIncludes);
       }
+
       resolve(matchingValues);
     });
   },
