@@ -38,11 +38,15 @@ export default Ember.Component.extend({
           case 27: // escape
             this.sendAction('focusInput');
               break;
+          default:
+            this.$('.active').removeClass('active');
+            this.sendAction('updateKeypress', event);
+              break;
       }
   },
 
   selectPrevious() {
-    const $active = this.$('.active')
+    const $active = this.$('.active');
     let $next = $active.prev('li');
     if ($next.length === 0) {
       $next = this.$('li').last();

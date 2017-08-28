@@ -48,7 +48,11 @@ export default Ember.Mixin.create({
     focusInput() {
       this.$(this.get('inputSelector')).focus();
     },
-
+    updateKeypress(event) {
+      const $input = this.$(this.get('inputSelector'));
+      const value = $input.val();
+      $input.focus().val(`${value}${event.key}`);
+    }
   },
 
   config: null,
