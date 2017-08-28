@@ -15,6 +15,8 @@
     overflow-y: scroll;
     position: absolute;
     z-index: $z-index;
+    box-shadow: $box-shadow;
+
     ul {
         width: auto;
         min-width: auto;
@@ -22,7 +24,6 @@
         padding-left: 0px;
         list-style-type: none;
         border: $border;
-        box-shadow: $box-shadow;
         background-color: $background-color;
         color: $font-color;
         li {
