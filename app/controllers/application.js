@@ -1,16 +1,18 @@
 import Ember from 'ember';
+import demoUsers from '../constants/demo-users';
+import demoBuzzwords from '../constants/demo-buzzwords';
 
 export default Ember.Controller.extend({
   // BEGIN-SNIPPET mentionableConfig1
   mentionableConfig: {
-    values: ['Johnny', 'Syd', 'Steve', 'Paul']
+    values: ['Johnny', 'Syd', 'Steve', 'Stuart', 'Stephanie', 'Stacy', 'Paul']
   },
   // END-SNIPPET
 
   // BEGIN-SNIPPET mentionableConfig2
   hashtagConfig: {
     token: '#',
-    values: ['noAmpersand', 'atSucks', 'poundThins', 'hashBrowns']
+    values: ['noAmpersand', 'atSucks', 'poundThis', 'hashBrowns']
   },
   // END-SNIPPET
 
@@ -21,7 +23,7 @@ export default Ember.Controller.extend({
     },
     {
       token: '#',
-      values: ['noAmpersand', 'atSucks', 'poundThins', 'hashBrowns']
+      values: ['noAmpersand', 'atSucks', 'poundThis', 'hashBrowns']
     }
   ],
   // END-SNIPPET
@@ -63,11 +65,20 @@ export default Ember.Controller.extend({
   customRenderConfig: {
     searchProperty: 'name',
     values: [
-      { id: '1', name: 'Alfred', image: 'images/user-1.png' },
+      { id: '1', name: 'Annie', image: 'images/user-1.png' },
       { id: '2', name: 'Martin', image: 'images/user-2.png' },
-      { id: '3', name: 'Norman', image: 'images/user-3.png' }
+      { id: '3', name: 'Mary', image: 'images/user-3.png' }
     ]
   },
   // END-SNIPPET
 
+  tryItConfig: [
+    {
+      values: demoUsers
+    },
+    {
+      token: '#',
+      values: demoBuzzwords
+    }
+  ]
 });

@@ -25,7 +25,22 @@ h2 {
 input, textarea {
   width: 50%;
   margin: 10px 0px 0px;
+  padding: 7px;
 }
+
+.mentionable-picker-wrapper {
+  li {
+    line-height: 20px;
+    vertical-align: middle;
+    img {
+      float: left;
+      margin-right: 5px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
 
 pre {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
