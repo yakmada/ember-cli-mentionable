@@ -1,21 +1,12 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-// import { keyEvent } from 'ember-native-dom-helpers';
-
-const DUMMY_VALUES = ['foo', 'bar', 'baz'];
-const DUMMY_COMPLEX_VALUES = [{
-    name: 'foo'
-  },
-  {
-    name: 'bar'
-  },
-  {
-    name: 'baz'
-  }
-];
-
-const SORT_TEST_VALUES = ['tell', 'ask', 'say'];
+import sendEvent from '../../helpers/send-event';
+import {
+  DUMMY_VALUES,
+  DUMMY_COMPLEX_VALUES,
+  SORT_TEST_VALUES
+} from '../../helpers/test-data';
 
 moduleForComponent('mentionable-input', 'Integration | Component | mentionable input', {
   integration: true
@@ -32,7 +23,7 @@ test('it renders picker results', function(assert) {
   const mentionableConfig = [{
     values: DUMMY_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -51,7 +42,7 @@ test('it renders picker searchProperty results', function(assert) {
     searchProperty: 'name',
     values: DUMMY_COMPLEX_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -69,7 +60,7 @@ test('it renders no results found', function(assert) {
   const mentionableConfig = [{
     values: DUMMY_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -86,7 +77,7 @@ test('it clears picker results', function(assert) {
   const mentionableConfig = [{
     values: DUMMY_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -109,7 +100,7 @@ test('it sets results from click', function(assert) {
     values: DUMMY_VALUES
   }];
   this.set('testValue', '');
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -135,7 +126,7 @@ test('it sets searchProperty results from click', function(assert) {
     values: DUMMY_COMPLEX_VALUES
   }];
   this.set('testValue', '');
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -158,19 +149,12 @@ test('it sets searchProperty results from click', function(assert) {
   });
 });
 
-
-/*
-  this test verifies an issue where the RegExp was improperly replacing the input value
-  type: 'below the @b'
-  select: 'bar'
-  result: 'elow the @bbar'
- */
-test('it correctly updates input', function(assert) {
+test('it sets results from keyboard', function(assert) {
   const mentionableConfig = [{
     values: DUMMY_VALUES
   }];
-  this.set('testValue', '');
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('testValue', 'x');
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -178,56 +162,25 @@ test('it correctly updates input', function(assert) {
     }}
   `);
 
-  this.$('input').val('below the @b').trigger('keyup');
+  const $input = this.$('input');
+  $input.val('@b').trigger('keyup');
   return wait().then(() => {
     assert.ok(this.$('ul').text().trim().includes('bar'));
     assert.ok(this.$('ul').text().trim().includes('baz'));
-    this.$('li').first().click();
+    sendEvent($input, 'keyup', { keyCode: 40 });
+    sendEvent(this.$('ul.mentionable-picker li.active'), 'keydown', { keyCode: 13 });
     return wait().then(() => {
-      const result = this.$('input').val().trim();
-      assert.equal(
-        result,
-        `below the @bar`
-      );
+      assert.equal(this.$('input').val().trim(), '@bar');
+      assert.equal(this.get('testValue').trim(), '@bar');
     });
   });
 });
-
-
-
-/* commenting out keyboard tests, as wait() is not waiting :( */
-
-// test('it sets results from keyboard', function(assert) {
-//   const mentionableConfig = [{
-//     values: DUMMY_VALUES
-//   }];
-//   this.set('testValue', 'x');
-//   this.set('mentionableConfig', mentionableConfig)
-//   this.render(hbs `
-//     {{mentionable-input
-//       config=mentionableConfig
-//       value=testValue
-//     }}
-//   `);
-
-//   this.$('input').val('@b').trigger('keyup');
-//   return wait().then(() => {
-//     assert.ok(this.$('ul').text().trim().includes('bar'));
-//     assert.ok(this.$('ul').text().trim().includes('baz'));
-
-//     keyEvent('input', 'keyup', 38);
-//     keyEvent('ul.mentionable-picker li', 'keydown', 13);
-//     return wait().then(() => {
-//       assert.equal(this.get('testValue').trim(), '@bar');
-//     });
-//   });
-// });
 
 test('it renders sorted results', function(assert) {
   const mentionableConfig = [{
     values: SORT_TEST_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -250,7 +203,7 @@ test('it respects returnSortedMatches: false', function(assert) {
     returnSortedMatches: false,
     values: SORT_TEST_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -272,7 +225,7 @@ test('it renders startsWith values before includes values results', function(ass
   const mentionableConfig = [{
     values: SORT_TEST_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -293,7 +246,7 @@ test('it respects returnStartingMatchesFirst: false', function(assert) {
     returnStartingMatchesFirst: false,
     values: SORT_TEST_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-input
       config=mentionableConfig
@@ -306,5 +259,104 @@ test('it respects returnStartingMatchesFirst: false', function(assert) {
     assert.equal(li0, 'ask', `${li0} equals 'ask'`);
     const li1 = this.$('ul li:eq(1)').text().trim();
     assert.equal(li1, 'say', `${li1} equals 'say'`);
+  });
+});
+
+
+test('it bubbles results', function(assert) {
+  const mentionableConfig = [{
+    values: DUMMY_VALUES
+  }];
+  this.set('actions.didFocusIn', () => {
+    this.set('didFocusIn', true);
+  });
+  this.set('actions.didFocusOut', () => {
+    this.set('didFocusOut', true);
+  });
+  this.set('actions.didKeyDown', () => {
+    this.set('didKeyDown', true);
+  });
+  this.set('actions.didKeyUp', () => {
+    this.set('didKeyUp', true);
+  });
+  this.set('actions.didKeyPress', () => {
+    this.set('didKeyPress', true);
+  });
+  this.set('actions.didInput', () => {
+    this.set('didInput', true);
+  });
+  this.set('actions.didPressEnter', () => {
+    this.set('didPressEnter', true);
+  });
+  this.set('actions.didPressEscape', () => {
+    this.set('didPressEscape', true);
+  });
+  this.set('mentionableConfig', mentionableConfig);
+  this.render(hbs `
+    {{mentionable-input
+      config=mentionableConfig
+      didFocusIn=(action "didFocusIn")
+      didFocusOut=(action "didFocusOut")
+      didKeyDown=(action "didKeyDown")
+      didKeyUp=(action "didKeyUp")
+      didKeyPress=(action "didKeyPress")
+      didInput=(action "didInput")
+      didPressEnter=(action "didPressEnter")
+      didPressEscape=(action "didPressEscape")
+    }}
+  `);
+
+  const $input = this.$('input');
+  sendEvent($input, 'focus', {});
+  sendEvent($input, 'keydown', {});
+  sendEvent($input, 'keyup', {});
+  sendEvent($input, 'input', {});
+  sendEvent($input, 'keypress', {});
+  sendEvent($input, 'keyup', { keyCode: 13 });
+  sendEvent($input, 'keyup', { keyCode: 27 });
+  sendEvent($input, 'blur', {});
+  return wait().then(() => {
+    assert.equal(this.get('didFocusIn'), true, 'didFocusIn');
+    assert.equal(this.get('didKeyDown'), true, 'didKeyDown');
+    assert.equal(this.get('didKeyUp'), true, 'didKeyUp');
+    assert.equal(this.get('didKeyPress'), true, 'didKeyPress');
+    assert.equal(this.get('didInput'), true, 'didInput');
+    assert.equal(this.get('didPressEnter'), true, 'didPressEnter');
+    assert.equal(this.get('didFocusOut'), true, 'didFocusOut');
+    assert.equal(this.get('didPressEscape'), true, 'didPressEscape');
+  });
+});
+
+/*
+  this test verifies an issue where the RegExp was improperly replacing the input value
+  type: 'below the @b'
+  select: 'bar'
+  result: 'elow the @bbar'
+ */
+test('it correctly updates input', function(assert) {
+  const mentionableConfig = [{
+    values: DUMMY_VALUES
+  }];
+  this.set('testValue', '');
+  this.set('mentionableConfig', mentionableConfig);
+  this.render(hbs `
+    {{mentionable-input
+      config=mentionableConfig
+      value=testValue
+    }}
+  `);
+
+  this.$('input').val('below the @b').trigger('keyup');
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
+    this.$('li').first().click();
+    return wait().then(() => {
+      const result = this.$('input').val().trim();
+      assert.equal(
+        result,
+        'below the @bar'
+      );
+    });
   });
 });
