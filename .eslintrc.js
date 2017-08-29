@@ -7,8 +7,8 @@ module.exports = {
   },
   extends: [
       'eslint:recommended',
-      'plugin:ember/recommended',
-      'plugin:eslint-plugin-ember-best-practices/recommended'
+      'plugin:ember/recommended'
+      // 'plugin:eslint-plugin-ember-best-practices/recommended'
   ],
   env: {
     browser: true
@@ -28,14 +28,13 @@ module.exports = {
       "ember/avoid-leaking-state-in-components": 1,
       "ember/alias-model-in-controller": 1,
 
-      // this is from a GREAT plugin that enforces ember's best practices. Set them all to warnings
-      "ember-best-practices/no-side-effect-cp": 1,
-      "ember-best-practices/no-attrs": 1,
-      "ember-best-practices/no-observers": 0,    // this is part of the ember package, so I disabled it here
-      "ember-best-practices/require-dependent-keys": 1,
-      "ember-best-practices/no-lifecycle-events": 1,
-      "ember-best-practices/no-attrs-snapshot": 1,
-      "ember-best-practices/no-global-jquery": 1,
+      // "ember-best-practices/no-side-effect-cp": 1,
+      // "ember-best-practices/no-attrs": 1,
+      // "ember-best-practices/no-observers": 0,    // this is part of the ember package, so I disabled it here
+      // "ember-best-practices/require-dependent-keys": 1,
+      // "ember-best-practices/no-lifecycle-events": 1,
+      // "ember-best-practices/no-attrs-snapshot": 1,
+      // "ember-best-practices/no-global-jquery": 1,
 
       "no-cond-assign": [
         2,
