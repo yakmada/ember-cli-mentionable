@@ -191,9 +191,9 @@ export default Ember.Mixin.create({
   pickerItemPartial: null,
   focusPicker(event) {
     if (
-        (event.keyCode === 38 || event.keyCode === 40) &&
-        isPresent(this.get('matchingValues'))
-      )    {
+      (event.keyCode === 38 || event.keyCode === 40) &&
+      isPresent(this.get('matchingValues'))
+    ) {
       this.$(`.${this.get('pickerClass')}`).focus();
     }
   }
