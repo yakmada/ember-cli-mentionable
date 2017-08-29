@@ -23,8 +23,6 @@ module.exports = {
       "ember/order-in-components": 0,
       "ember/order-in-controllers": 0,
       "ember/order-in-routes": 0,
-      "ember/closure-actions": 1,
-
       "ember/no-on-calls-in-components": 1, // we should bump this to 2 later
       "ember/named-functions-in-promises": 0,
       "ember/avoid-leaking-state-in-components": 1,
@@ -48,7 +46,7 @@ module.exports = {
         "multi-line"
       ],
       "no-debugger": 2,
-      "eqeqeq": 1,  // this should really be 2
+      "eqeqeq": 2,
       "no-eval": 2,
       "guard-for-in": 0,
       "wrap-iife": 2,
@@ -74,7 +72,7 @@ module.exports = {
       "no-undef": 2,
       "dot-notation": 2,
       "strict": 0,
-      "no-eq-null": 1,  // this should really be 2
+      "no-eq-null": 2,
       "no-unused-vars": [
           "error", {
               "vars": "all",
@@ -87,10 +85,6 @@ module.exports = {
         "never"
       ],
       "no-spaced-func": 2,
-    //   "array-bracket-spacing": [
-    //     2,
-    //     "always"
-    //   ],
       "space-in-parens": [
         2,
         "never"
@@ -197,8 +191,5 @@ module.exports = {
     ],
     "no-lonely-if": 2,
     "block-spacing": 2
-  },
-  globals: {
-
   }
 };
