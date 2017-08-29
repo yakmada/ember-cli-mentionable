@@ -42,6 +42,8 @@
     "ember-native-dom-helpers": "^0.5.4",
     "ember-resolver": "^4.0.0",
     "ember-source": "~2.14.0-beta.1",
+    "eslint-plugin-ember": "^4.3.0",
+    "eslint-plugin-ember-best-practices": "^0.8.0",
     "loader.js": "^4.2.3"
   },
   "engines": {

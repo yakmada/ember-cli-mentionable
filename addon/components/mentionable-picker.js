@@ -21,28 +21,30 @@ export default Ember.Component.extend({
   },
 
   handleKeyDown(selectedValue, event) {
-      if (isEmpty(this.get('matchingValues'))) {
-        return;
-      }
-      event.preventDefault();
-      switch (event.keyCode) {
-          case 38: // arrow up
-            this.selectPrevious();
-              break;
-          case 40: // arrow down
-            this.selectNext();
-              break;
-          case 13: // enter
-            this.selectValue(selectedValue);
-              break;
-          case 27: // escape
-            this.sendAction('focusInput');
-              break;
-          default:
-            this.$('.active').removeClass('active');
-            this.sendAction('updateKeypress', event);
-              break;
-      }
+    if (isEmpty(this.get('matchingValues'))) {
+      return;
+    }
+    event.preventDefault();
+    switch (event.keyCode) {
+      case 38: // arrow up
+        this.selectPrevious();
+        break;
+      case 40: // arrow down
+        this.selectNext();
+        break;
+      case 13: // enter
+        this.selectValue(selectedValue);
+        this.sendAction('didPressEnter'); // eslint-disable-line ember/closure-actions
+        break;
+      case 27: // escape
+        this.sendAction('focusInput'); // eslint-disable-line ember/closure-actions
+        this.sendAction('didPressEscape'); // eslint-disable-line ember/closure-actions
+        break;
+      default:
+        this.$('.active').removeClass('active');
+        this.sendAction('updateKeypress', event); // eslint-disable-line ember/closure-actions
+        break;
+    }
   },
 
   selectPrevious() {
@@ -56,7 +58,7 @@ export default Ember.Component.extend({
   },
 
   selectNext() {
-    const $active = this.$('.active')
+    const $active = this.$('.active');
     let $next = $active.next('li');
     if ($next.length === 0) {
       $next = this.$('li').first();
@@ -66,8 +68,8 @@ export default Ember.Component.extend({
   },
 
   selectValue(selectedValue) {
-      this.set('selectedValue', selectedValue);
-      this.sendAction('didSelectValue');
+    this.set('selectedValue', selectedValue);
+    this.sendAction('didSelectValue'); // eslint-disable-line ember/closure-actions
   },
 
   focusIn(event) {

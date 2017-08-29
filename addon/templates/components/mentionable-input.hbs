@@ -10,12 +10,14 @@
     tabindex=tabindex
     required=required
     maxlength=maxlength
-    focus-in="didFocusIn"
-    focus-out="didFocusOut"
-    key-up="didKeyUp"
-    key-press="didKeyPress"
-    insert-newline="didInsertNewline"
-    enter="didPressEnter"
-    escape-press="didPressEscape"
+    focus-in=(action "didFocusIn")
+    focus-out=(action "didFocusOut")
+    key-down=(action "didKeyDown")
+    key-up=(action "didKeyUp")
+    key-press=(action "didKeyPress")
+    insert-newline=(action "didInsertNewline")
+    enter=(action "didPressEnter")
+    escape-press=(action "didPressEscape")
+    input=(action "didInput")
 }}
 {{partial "mentionable-picker"}}

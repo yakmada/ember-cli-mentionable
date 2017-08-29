@@ -10,40 +10,46 @@ const Mentionable = Ember.Object.extend({
   re: null,
   returnSortedMatches: true,
   returnStartingMatchesFirst: true,
-  values: []
+  values: null
 });
 
 export default Ember.Mixin.create({
   elementClassNames: null,
   actions: {
     didFocusIn() {
-      this.sendAction('didFocusIn');
+      this.sendAction('didFocusIn'); // eslint-disable-line ember/closure-actions
     },
     didFocusOut() {
-      this.sendAction('didFocusOut');
+      this.sendAction('didFocusOut'); // eslint-disable-line ember/closure-actions
     },
-    didKeyPress() {
-      this.sendAction('didKeyPress');
+    didKeyPress(value, event) {
+      this.sendAction('didKeyPress', value, event); // eslint-disable-line ember/closure-actions
     },
     didInsertNewline() {
-      this.sendAction('didInsertNewline');
+      this.sendAction('didInsertNewline'); // eslint-disable-line ember/closure-actions
     },
     didPressEnter() {
-      this.sendAction('didPressEnter');
+      this.sendAction('didPressEnter'); // eslint-disable-line ember/closure-actions
     },
     didPressEscape() {
-      this.sendAction('didPressEscape');
+      this.sendAction('didPressEscape'); // eslint-disable-line ember/closure-actions
+    },
+    didKeyDown() {
+      this.sendAction('didKeyDown'); // eslint-disable-line ember/closure-actions
     },
     didKeyUp(value, event) {
-      this.sendAction('didKeyUp');
+      this.sendAction('didKeyUp', event); // eslint-disable-line ember/closure-actions
       this.focusPicker(event);
       if (event.keyCode !== 38 && event.keyCode !== 40 && event.keyCode !== 13) {
         Ember.run.debounce(this, this.parseMentionables, this.get('debounceTime'));
       }
     },
+    didInput(event) {
+      this.sendAction('didInput', event); // eslint-disable-line ember/closure-actions
+    },
     didSelectValue() {
       this.updateValue();
-      this.sendAction('didSelectValue');
+      this.sendAction('didSelectValue'); // eslint-disable-line ember/closure-actions
     },
     focusInput() {
       this.$(this.get('inputSelector')).focus();
@@ -73,7 +79,7 @@ export default Ember.Mixin.create({
       let values = Ember.A(configItem.values.slice());
 
       let mentionable = Mentionable.create(configItem);
-      mentionable.set('re', new RegExp(`(^|\\W+)${mentionable.get('token')}\\w*$`, "gi"));
+      mentionable.set('re', new RegExp(`(^|\\W+)${mentionable.get('token')}\\w*$`, 'gi'));
 
       if (mentionable.get('returnSortedMatches')) {
         const searchProperty = mentionable.get('searchProperty');
@@ -93,7 +99,7 @@ export default Ember.Mixin.create({
     var promises = Ember.A([]);
     this.get('mentionables').map((mentionable) => {
       promises.addObject(this.parseMentionable(mentionable));
-    })
+    });
 
     Ember.RSVP.all(promises).finally(() => {
       this.set('matchingValuesPending', false);
@@ -115,7 +121,8 @@ export default Ember.Mixin.create({
         }).finally(() => {
           resolve();
         });
-      } else {
+      }
+      else {
         resolve();
       }
     });
@@ -131,7 +138,8 @@ export default Ember.Mixin.create({
       let matchingIncludes = Ember.A([]);
       if (text.length === 0) {
         matchingValues = values;
-      } else {
+      }
+      else {
         values.map((value) => {
           let searchValue = value;
           if (isPresent(searchProperty)) {
@@ -185,8 +193,7 @@ export default Ember.Mixin.create({
     if (
         (event.keyCode === 38 || event.keyCode === 40) &&
         isPresent(this.get('matchingValues'))
-      )
-    {
+      )    {
       this.$(`.${this.get('pickerClass')}`).focus();
     }
   }
