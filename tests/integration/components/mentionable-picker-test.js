@@ -1,9 +1,10 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-// import { keyEvent } from 'ember-native-dom-helpers';
-
-const DUMMY_DATA = ['foo', 'bar', 'baz'];
+import sendEvent from '../../helpers/send-event';
+import {
+  DUMMY_VALUES
+} from '../../helpers/test-data';
 
 moduleForComponent('mentionable-picker', 'Integration | Component | mentionable picker', {
   integration: true
@@ -16,7 +17,7 @@ test('it renders', function(assert) {
 });
 
 test('it renders matchingValues', function(assert) {
-  this.set('matchingValues', DUMMY_DATA);
+  this.set('matchingValues', DUMMY_VALUES);
   this.render(hbs`
     {{mentionable-picker
       matchingValues=matchingValues
@@ -24,24 +25,24 @@ test('it renders matchingValues', function(assert) {
     }}
   `);
 
-    assert.ok(this.$('ul').text().trim().includes('foo'));
-    assert.ok(this.$('ul').text().trim().includes('bar'));
-    assert.ok(this.$('ul').text().trim().includes('baz'));
+  assert.ok(this.$('ul').text().trim().includes('foo'));
+  assert.ok(this.$('ul').text().trim().includes('bar'));
+  assert.ok(this.$('ul').text().trim().includes('baz'));
 });
 
 test('it hides', function(assert) {
-  this.set('matchingValues', DUMMY_DATA);
+  this.set('matchingValues', DUMMY_VALUES);
   this.render(hbs`
     {{mentionable-picker
       matchingValues=matchingValues
       showPicker=false
     }}
   `);
-    assert.equal(this.$('ul').text().trim(), '');
+  assert.equal(this.$('ul').text().trim(), '');
 });
 
 test('it shows pending message', function(assert) {
-  this.set('matchingValues', DUMMY_DATA);
+  this.set('matchingValues', DUMMY_VALUES);
   this.set('matchingValuesPendingMessage', 'pending');
   this.render(hbs`
     {{mentionable-picker
@@ -51,7 +52,7 @@ test('it shows pending message', function(assert) {
       matchingValuesPendingMessage=matchingValuesPendingMessage
     }}
   `);
-    assert.equal(this.$('ul').text().trim(), 'pending');
+  assert.equal(this.$('ul').text().trim(), 'pending');
 });
 
 test('it shows no matchingValues message', function(assert) {
@@ -64,11 +65,11 @@ test('it shows no matchingValues message', function(assert) {
       noMatchingValuesMessage=noMatchingValuesMessage
     }}
   `);
-    assert.equal(this.$('ul').text().trim(), 'no matching items');
+  assert.equal(this.$('ul').text().trim(), 'no matching items');
 });
 
 test('it sets matchingValues from click', function(assert) {
-  this.set('matchingValues', DUMMY_DATA);
+  this.set('matchingValues', DUMMY_VALUES);
   this.set('selectedValue', null);
   this.render(hbs `
     {{mentionable-picker
@@ -93,88 +94,90 @@ test('it sets matchingValues from click', function(assert) {
 
 /* commenting out keyboard tests, as wait() is not waiting :( */
 
-// test('it sets matchingValues from keyboard', function(assert) {
-//   this.set('matchingValues', DUMMY_DATA);
-//   this.set('selectedValue', null);
-//   this.render(hbs `
-//     {{mentionable-picker
-//       matchingValues=matchingValues
-//       showPicker=true
-//       selectedValue=selectedValue
-//     }}
-//   `);
+test('it sets matchingValues from keyboard', function(assert) {
+  this.set('matchingValues', DUMMY_VALUES);
+  this.set('selectedValue', null);
+  this.render(hbs `
+    {{mentionable-picker
+      matchingValues=matchingValues
+      showPicker=true
+      selectedValue=selectedValue
+    }}
+  `);
 
-//   this.$('ul').focus();
-//   return wait().then(() => {
-//     assert.ok(this.$('ul').text().trim().includes('foo'));
-//     assert.ok(this.$('ul').text().trim().includes('bar'));
-//     assert.ok(this.$('ul').text().trim().includes('baz'));
+  this.$('ul').focus();
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('foo'));
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
 
-//     keyEvent('li', 'keydown', 13);
-//     return wait().then(() => {
-//       assert.equal(this.get('selectedValue').trim(), 'foo');
-//     });
-//   });
-// });
+    sendEvent(this.$('li:eq(0)'), 'keydown', { keyCode: 13 });
+    return wait().then(() => {
+      assert.equal(this.get('selectedValue').trim(), 'foo');
+    });
+  });
+});
 
-// test('it sets navigates up from keyboard', function(assert) {
-//   this.set('matchingValues', DUMMY_DATA);
-//   this.set('selectedValue', null);
-//   this.render(hbs `
-//     {{mentionable-picker
-//       matchingValues=matchingValues
-//       showPicker=true
-//       selectedValue=selectedValue
-//       pickerClass="picker-sticker"
-//     }}
-//   `);
+test('it sets navigates up from keyboard', function(assert) {
+  this.set('matchingValues', DUMMY_VALUES);
+  this.set('selectedValue', null);
+  this.render(hbs `
+    {{mentionable-picker
+      matchingValues=matchingValues
+      showPicker=true
+      selectedValue=selectedValue
+      pickerClass="picker-sticker"
+    }}
+  `);
 
-//   this.$('.picker-sticker').focus();
-//   return wait().then(() => {
-//     assert.ok(this.$('ul').text().trim().includes('foo'));
-//     assert.ok(this.$('ul').text().trim().includes('bar'));
-//     assert.ok(this.$('ul').text().trim().includes('baz'));
-//     assert.equal(this.$('li.active').text(), 'foo');
+  this.$('.picker-sticker').focus();
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('foo'));
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
+    assert.equal(this.$('li.active').text().trim(), 'foo');
 
-//     keyEvent('li.active', 'keydown', 38);
-//     return wait().then(() => {
-//       assert.equal(this.$('li.active').text(), 'baz');
+    const $li = this.$('li.active');
+    sendEvent($li, 'keydown', { keyCode: 38 });
+    return wait().then(() => {
+      assert.equal(this.$('li.active').text().trim(), 'baz');
 
-//       keyEvent('li.active', 'keydown', 38);
-//       return wait().then(() => {
-//         assert.equal(this.$('li.active').text(), 'bar');
-//       });
-//     });
-//   });
-// });
+      sendEvent($li, 'keydown', { keyCode: 38 });
+      return wait().then(() => {
+        assert.equal(this.$('li.active').text().trim(), 'bar');
+      });
+    });
+  });
+});
 
-// test('it sets navigates down from keyboard', function(assert) {
-//   this.set('matchingValues', DUMMY_DATA);
-//   this.set('selectedValue', null);
-//   this.render(hbs `
-//     {{mentionable-picker
-//       matchingValues=matchingValues
-//       showPicker=true
-//       selectedValue=selectedValue
-//       pickerClass="picker-sticker"
-//     }}
-//   `);
+test('it sets navigates down from keyboard', function(assert) {
+  this.set('matchingValues', DUMMY_VALUES);
+  this.set('selectedValue', null);
+  this.render(hbs `
+    {{mentionable-picker
+      matchingValues=matchingValues
+      showPicker=true
+      selectedValue=selectedValue
+      pickerClass="picker-sticker"
+    }}
+  `);
 
-//   this.$('.picker-sticker').focus();
-//   return wait().then(() => {
-//     assert.ok(this.$('ul').text().trim().includes('foo'));
-//     assert.ok(this.$('ul').text().trim().includes('bar'));
-//     assert.ok(this.$('ul').text().trim().includes('baz'));
-//     assert.equal(this.$('li.active').text(), 'foo');
+  this.$('.picker-sticker').focus();
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('foo'));
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
+    assert.equal(this.$('li.active').text().trim(), 'foo');
 
-//     keyEvent('li.active', 'keydown', 40);
-//     return wait().then(() => {
-//       assert.equal(this.$('li.active').text(), 'bar');
+    const $li = this.$('li.active');
+    sendEvent($li, 'keydown', { keyCode: 40 });
+    return wait().then(() => {
+      assert.equal(this.$('li.active').text().trim(), 'bar');
 
-//       keyEvent('li.active', 'keydown', 40);
-//       return wait().then(() => {
-//         assert.equal(this.$('li.active').text(), 'baz');
-//       });
-//     });
-//   });
-// });
+      sendEvent($li, 'keydown', { keyCode: 40 });
+      return wait().then(() => {
+        assert.equal(this.$('li.active').text().trim(), 'baz');
+      });
+    });
+  });
+});

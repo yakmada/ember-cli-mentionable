@@ -50,7 +50,6 @@ mentionableConfig: {
 * mentionable-contenteditable 
 * maxResults to display in list
 * add the `searchValues` method to the mentionable config, so it cab be overriden globally or per config
-* get `wait()` helper working for testing keyboard events
 
 
 

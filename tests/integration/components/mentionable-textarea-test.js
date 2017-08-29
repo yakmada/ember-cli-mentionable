@@ -1,20 +1,12 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-// import { keyEvent } from 'ember-native-dom-helpers';
-
-const DUMMY_VALUES = ['foo', 'bar', 'baz'];
-const DUMMY_COMPLEX_VALUES = [
-  {
-    name: 'foo'
-  },
-  {
-    name: 'bar'
-  },
-  {
-    name: 'baz'
-  }
-];
+import sendEvent from '../../helpers/send-event';
+import {
+  DUMMY_VALUES,
+  DUMMY_COMPLEX_VALUES,
+  SORT_TEST_VALUES
+} from '../../helpers/test-data';
 
 moduleForComponent('mentionable-textarea', 'Integration | Component | mentionable textarea', {
   integration: true
@@ -31,7 +23,7 @@ test('it renders picker results', function(assert) {
   const mentionableConfig = [{
     values: DUMMY_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-textarea
       config=mentionableConfig
@@ -50,7 +42,7 @@ test('it renders picker searchProperty results', function(assert) {
     searchProperty: 'name',
     values: DUMMY_COMPLEX_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-textarea
       config=mentionableConfig
@@ -68,7 +60,7 @@ test('it renders no results found', function(assert) {
   const mentionableConfig = [{
     values: DUMMY_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-textarea
       config=mentionableConfig
@@ -85,7 +77,7 @@ test('it clears picker results', function(assert) {
   const mentionableConfig = [{
     values: DUMMY_VALUES
   }];
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-textarea
       config=mentionableConfig
@@ -108,7 +100,7 @@ test('it sets results from click', function(assert) {
     values: DUMMY_VALUES
   }];
   this.set('testValue', '');
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-textarea
       config=mentionableConfig
@@ -133,7 +125,7 @@ test('it sets searchProperty results from click', function(assert) {
     values: DUMMY_COMPLEX_VALUES
   }];
   this.set('testValue', '');
-  this.set('mentionableConfig', mentionableConfig)
+  this.set('mentionableConfig', mentionableConfig);
   this.render(hbs `
     {{mentionable-textarea
       config=mentionableConfig
@@ -156,30 +148,215 @@ test('it sets searchProperty results from click', function(assert) {
   });
 });
 
-/* commenting out keyboard tests, as wait() is not waiting :( */
+test('it sets results from keyboard', function(assert) {
+  const mentionableConfig = [{
+    values: DUMMY_VALUES
+  }];
+  this.set('testValue', 'x');
+  this.set('mentionableConfig', mentionableConfig);
+  this.render(hbs `
+    {{mentionable-textarea
+      config=mentionableConfig
+      value=testValue
+    }}
+  `);
 
-// test('it sets results from keyboard', function(assert) {
-//   const mentionableConfig = [{
-//     values: DUMMY_VALUES
-//   }];
-//   this.set('testValue', 'x');
-//   this.set('mentionableConfig', mentionableConfig)
-//   this.render(hbs `
-//     {{mentionable-textarea
-//       config=mentionableConfig
-//       value=testValue
-//     }}
-//   `);
+  const $textarea = this.$('textarea');
+  $textarea.val('@b').trigger('keyup');
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
+    sendEvent($textarea, 'keyup', { keyCode: 40 });
+    sendEvent(this.$('ul.mentionable-picker li.active'), 'keydown', { keyCode: 13 });
+    return wait().then(() => {
+      assert.equal(this.$('textarea').val().trim(), '@bar');
+      assert.equal(this.get('testValue').trim(), '@bar');
+    });
+  });
+});
 
-//   this.$('textarea').val('@b').trigger('keyup');
-//   return wait().then(() => {
-//     assert.ok(this.$('ul').text().trim().includes('bar'));
-//     assert.ok(this.$('ul').text().trim().includes('baz'));
 
-//     keyEvent('textarea', 'keyup', 38);
-//     keyEvent('ul.mentionable-picker li', 'keydown', 13);
-//     return wait().then(() => {
-//       assert.equal(this.get('testValue').trim(), '@bar');
-//     });
-//   });
-// });
+test('it renders sorted results', function(assert) {
+  const mentionableConfig = [{
+    values: SORT_TEST_VALUES
+  }];
+  this.set('mentionableConfig', mentionableConfig);
+  this.render(hbs `
+    {{mentionable-textarea
+      config=mentionableConfig
+    }}
+  `);
+
+  this.$('textarea').val('@').trigger('keyup');
+  return wait().then(() => {
+    const li0 = this.$('ul li:eq(0)').text().trim();
+    assert.equal(li0, 'ask', `${li0} equals 'ask'`);
+    const li1 = this.$('ul li:eq(1)').text().trim();
+    assert.equal(li1, 'say', `${li1} equals 'say'`);
+    const li2 = this.$('ul li:eq(2)').text().trim();
+    assert.equal(li2, 'tell', `${li2} equals 'tell'`);
+  });
+});
+
+test('it respects returnSortedMatches: false', function(assert) {
+  const mentionableConfig = [{
+    returnSortedMatches: false,
+    values: SORT_TEST_VALUES
+  }];
+  this.set('mentionableConfig', mentionableConfig);
+  this.render(hbs `
+    {{mentionable-textarea
+      config=mentionableConfig
+    }}
+  `);
+
+  this.$('textarea').val('@').trigger('keyup');
+  return wait().then(() => {
+    const li0 = this.$('ul li:eq(0)').text().trim();
+    assert.equal(li0, 'tell', `${li0} equals 'tell'`);
+    const li1 = this.$('ul li:eq(1)').text().trim();
+    assert.equal(li1, 'ask', `${li1} equals 'ask'`);
+    const li2 = this.$('ul li:eq(2)').text().trim();
+    assert.equal(li2, 'say', `${li2} equals 'say'`);
+  });
+});
+
+test('it renders startsWith values before includes values results', function(assert) {
+  const mentionableConfig = [{
+    values: SORT_TEST_VALUES
+  }];
+  this.set('mentionableConfig', mentionableConfig);
+  this.render(hbs `
+    {{mentionable-textarea
+      config=mentionableConfig
+    }}
+  `);
+
+  this.$('textarea').val('@s').trigger('keyup');
+  return wait().then(() => {
+    const li0 = this.$('ul li:eq(0)').text().trim();
+    assert.equal(li0, 'say', `${li0} equals 'say'`);
+    const li1 = this.$('ul li:eq(1)').text().trim();
+    assert.equal(li1, 'ask', `${li1} equals 'ask'`);
+  });
+});
+
+test('it respects returnStartingMatchesFirst: false', function(assert) {
+  const mentionableConfig = [{
+    returnStartingMatchesFirst: false,
+    values: SORT_TEST_VALUES
+  }];
+  this.set('mentionableConfig', mentionableConfig);
+  this.render(hbs `
+    {{mentionable-textarea
+      config=mentionableConfig
+    }}
+  `);
+
+  this.$('textarea').val('@s').trigger('keyup');
+  return wait().then(() => {
+    const li0 = this.$('ul li:eq(0)').text().trim();
+    assert.equal(li0, 'ask', `${li0} equals 'ask'`);
+    const li1 = this.$('ul li:eq(1)').text().trim();
+    assert.equal(li1, 'say', `${li1} equals 'say'`);
+  });
+});
+
+
+test('it bubbles results', function(assert) {
+  const mentionableConfig = [{
+    values: DUMMY_VALUES
+  }];
+  this.set('actions.didFocusIn', () => {
+    this.set('didFocusIn', true);
+  });
+  this.set('actions.didFocusOut', () => {
+    this.set('didFocusOut', true);
+  });
+  this.set('actions.didKeyDown', () => {
+    this.set('didKeyDown', true);
+  });
+  this.set('actions.didKeyUp', () => {
+    this.set('didKeyUp', true);
+  });
+  this.set('actions.didKeyPress', () => {
+    this.set('didKeyPress', true);
+  });
+  this.set('actions.didInput', () => {
+    this.set('didInput', true);
+  });
+  this.set('actions.didPressEnter', () => {
+    this.set('didPressEnter', true);
+  });
+  this.set('actions.didPressEscape', () => {
+    this.set('didPressEscape', true);
+  });
+  this.set('mentionableConfig', mentionableConfig);
+  this.render(hbs `
+    {{mentionable-textarea
+      config=mentionableConfig
+      didFocusIn=(action "didFocusIn")
+      didFocusOut=(action "didFocusOut")
+      didKeyDown=(action "didKeyDown")
+      didKeyUp=(action "didKeyUp")
+      didKeyPress=(action "didKeyPress")
+      didInput=(action "didInput")
+      didPressEnter=(action "didPressEnter")
+      didPressEscape=(action "didPressEscape")
+    }}
+  `);
+
+  const $textarea = this.$('textarea');
+  sendEvent($textarea, 'focus', {});
+  sendEvent($textarea, 'keydown', {});
+  sendEvent($textarea, 'keyup', {});
+  sendEvent($textarea, 'input', {});
+  sendEvent($textarea, 'keypress', {});
+  sendEvent($textarea, 'keyup', { keyCode: 13 });
+  sendEvent($textarea, 'keyup', { keyCode: 27 });
+  sendEvent($textarea, 'blur', {});
+  return wait().then(() => {
+    assert.equal(this.get('didFocusIn'), true, 'didFocusIn');
+    assert.equal(this.get('didKeyDown'), true, 'didKeyDown');
+    assert.equal(this.get('didKeyUp'), true, 'didKeyUp');
+    assert.equal(this.get('didKeyPress'), true, 'didKeyPress');
+    assert.equal(this.get('didInput'), true, 'didInput');
+    assert.equal(this.get('didPressEnter'), true, 'didPressEnter');
+    assert.equal(this.get('didFocusOut'), true, 'didFocusOut');
+    assert.equal(this.get('didPressEscape'), true, 'didPressEscape');
+  });
+});
+
+/*
+  this test verifies an issue where the RegExp was improperly replacing the input value
+  type: 'below the @b'
+  select: 'bar'
+  result: 'elow the @bbar'
+ */
+test('it correctly updates textarea', function(assert) {
+  const mentionableConfig = [{
+    values: DUMMY_VALUES
+  }];
+  this.set('testValue', '');
+  this.set('mentionableConfig', mentionableConfig);
+  this.render(hbs `
+    {{mentionable-textarea
+      config=mentionableConfig
+      value=testValue
+    }}
+  `);
+
+  this.$('textarea').val('below the @b').trigger('keyup');
+  return wait().then(() => {
+    assert.ok(this.$('ul').text().trim().includes('bar'));
+    assert.ok(this.$('ul').text().trim().includes('baz'));
+    this.$('li').first().click();
+    return wait().then(() => {
+      const result = this.$('textarea').val().trim();
+      assert.equal(
+        result,
+        'below the @bar'
+      );
+    });
+  });
+});
