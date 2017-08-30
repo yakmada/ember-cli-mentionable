@@ -71,11 +71,14 @@ test('it shows no matchingValues message', function(assert) {
 test('it sets matchingValues from click', function(assert) {
   this.set('matchingValues', DUMMY_VALUES);
   this.set('selectedValue', null);
+  this.set('actions.didSelectValue', (selectedValue) => {
+    this.set('selectedValue', selectedValue);
+  });
   this.render(hbs `
     {{mentionable-picker
       matchingValues=matchingValues
       showPicker=true
-      selectedValue=selectedValue
+      didSelectValue=(action "didSelectValue")
     }}
   `);
 
@@ -97,11 +100,14 @@ test('it sets matchingValues from click', function(assert) {
 test('it sets matchingValues from keyboard', function(assert) {
   this.set('matchingValues', DUMMY_VALUES);
   this.set('selectedValue', null);
+  this.set('actions.didSelectValue', (selectedValue) => {
+    this.set('selectedValue', selectedValue);
+  });
   this.render(hbs `
     {{mentionable-picker
       matchingValues=matchingValues
       showPicker=true
-      selectedValue=selectedValue
+      didSelectValue=(action "didSelectValue")
     }}
   `);
 
@@ -120,12 +126,10 @@ test('it sets matchingValues from keyboard', function(assert) {
 
 test('it sets navigates up from keyboard', function(assert) {
   this.set('matchingValues', DUMMY_VALUES);
-  this.set('selectedValue', null);
   this.render(hbs `
     {{mentionable-picker
       matchingValues=matchingValues
       showPicker=true
-      selectedValue=selectedValue
       pickerClass="picker-sticker"
     }}
   `);
@@ -152,12 +156,10 @@ test('it sets navigates up from keyboard', function(assert) {
 
 test('it sets navigates down from keyboard', function(assert) {
   this.set('matchingValues', DUMMY_VALUES);
-  this.set('selectedValue', null);
   this.render(hbs `
     {{mentionable-picker
       matchingValues=matchingValues
       showPicker=true
-      selectedValue=selectedValue
       pickerClass="picker-sticker"
     }}
   `);

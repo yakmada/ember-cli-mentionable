@@ -68,8 +68,7 @@ export default Ember.Component.extend({
   },
 
   selectValue(selectedValue) {
-    this.set('selectedValue', selectedValue);
-    this.sendAction('didSelectValue'); // eslint-disable-line ember/closure-actions
+    this.sendAction('didSelectValue', selectedValue); // eslint-disable-line ember/closure-actions
   },
 
   focusIn(event) {
