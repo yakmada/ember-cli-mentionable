@@ -47,8 +47,8 @@ export default Ember.Mixin.create({
     didInput(event) {
       this.sendAction('didInput', event); // eslint-disable-line ember/closure-actions
     },
-    didSelectValue() {
-      this.updateValue();
+    didSelectValue(selectedValue) {
+      this.updateValue(selectedValue);
       this.sendAction('didSelectValue'); // eslint-disable-line ember/closure-actions
     },
     focusInput() {
@@ -163,8 +163,7 @@ export default Ember.Mixin.create({
     });
   },
 
-  updateValue() {
-    let selectedValue = this.get('selectedValue');
+  updateValue(selectedValue) {
     let searchProperty = this.get('searchProperty');
     if (isPresent(searchProperty)) {
       selectedValue = Ember.Object.create(selectedValue).get(searchProperty);
@@ -180,7 +179,6 @@ export default Ember.Mixin.create({
     properties for matchingValues
   */
   matchingValues: null,
-  selectedValue: null,
   matchingValuesPending: null,
   showPicker: computed('matchingValues', 'matchingValuesPending', function() {
     return (this.get('matchingValues') !== null || this.get('matchingValuesPending') === true);
