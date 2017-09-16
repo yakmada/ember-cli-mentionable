@@ -49,7 +49,7 @@ export default Ember.Mixin.create({
     },
     didSelectValue(selectedValue) {
       this.updateValue(selectedValue);
-      this.sendAction('didSelectValue'); // eslint-disable-line ember/closure-actions
+      this.sendAction('didSelectValue', selectedValue); // eslint-disable-line ember/closure-actions
     },
     focusInput() {
       this.$(this.get('inputSelector')).focus();
